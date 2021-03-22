@@ -35,7 +35,7 @@ int runexperiments(std::string configuration, unsigned int iteration) {
 		return 0;
 	} else {
 		// run experiments;
-		std::string bashcmdline = GLOB_script + configuration;// + " > /dev/null";
+		std::string bashcmdline = GLOB_script + configuration + " > /dev/null";
 		std::cout << " : running simulation";
 		int retval = system(bashcmdline.c_str());
 
