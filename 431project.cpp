@@ -124,12 +124,12 @@ int main(int argc, char** argv) {
 		}
 
 		if (proposedGeoEDP < bestEDP) {
-			std:cout << std::endl << "Prop: " << proposedGeoEDP << " Best: " << bestEDP;
+			std::cout << std::endl << "Prop: " << proposedGeoEDP << " Best: " << bestEDP;
 			bestEDPconfig = nextconf;
 			bestEDP = proposedGeoEDP;
 		}
 
-		std:cout << std::endl << "             " << "proposedGeoEDP="
+		std::cout << std::endl << "             " << "proposedGeoEDP="
 				<< proposedGeoEDP << ", bestEDP=" << bestEDP
 				<< ", proposedGeoTime=" << proposedGeoTime << ", bestTime="
 				<< bestTime;
