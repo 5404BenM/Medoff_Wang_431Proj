@@ -129,7 +129,7 @@ int main(int argc, char** argv) {
 			bestEDP = proposedGeoEDP;
 		}
 
-		std::cout << std::endl << "             " << "proposedGeoEDP="
+		std:cout << std::endl << "             " << "proposedGeoEDP="
 				<< proposedGeoEDP << ", bestEDP=" << bestEDP
 				<< ", proposedGeoTime=" << proposedGeoTime << ", bestTime="
 				<< bestTime;
