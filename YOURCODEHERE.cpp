@@ -20,7 +20,7 @@ using namespace std;
 /*
  * Enter your PSU IDs here to select the appropriate scanning order.
  */
-#define PSU_ID_SUM (911805882+911111111)
+#define PSU_ID_SUM (912717797+911805882)
 
 /*
  * Some global variables to track heuristic progress.
@@ -63,10 +63,80 @@ std::string generateCacheLatencyParams(string halfBackedConfig) {
 int validateConfiguration(std::string configuration) {
 
 	// FIXME - YOUR CODE HERE
+	if (!isNumDimConfiguration(configuration)) {
+		std::cerr << "isNumDimConfiguration cannot pass.\n";
+		return 0;
+	}
+	//The size of L1 instruction cache
+	unsigned int il1Size = getil1size(configuration);
+	//The size of L1 data cache
+	unsigned int dl1Size = getdl1size(configuration);
+	//The size of unified L2 cache
+	unsigned int ul2Size = getl2size(configuration);
+	//The block size of L1 instruction cache
+	unsigned int il1BlockSize = 8 * (1 << extractConfigPararm(configuration, 2));
+	//The block size of L1 data cache
+	unsigned int dl1BlockSize = 8 * (1 << extractConfigPararm(configuration, 2));
+	//The block size of unified L2 cache
+	unsigned int ul2BlockSize = 16 << extractConfigPararm(configuration, 8);
+	//std::clog << "il1 size is: " << il1Size << "\n";
+	//std::clog << "il1 block size is: " << il1BlockSize << "\n";
+	//std::clog << "dl1 size is: " << dl1Size << "\n";
+	//std::clog << "dl1 block size is: " << dl1BlockSize << "\n";
+	//std::clog << "ul2 size is: " << ul2Size << "\n";
+	//std::clog << "ul2 block size is: " << ul2BlockSize << "\n";
 
-	// The below is a necessary, but insufficient condition for validating a
-	// configuration.
-	return isNumDimConfiguration(configuration);
+
+	unsigned int ifqSize = 8 * (1 << extractConfigPararm(configuration, 0));
+	//std::clog << "ifq size is: " << ifqSize << "\n";
+
+	//il1BlockSize must be at least the ifqSize
+	if (il1BlockSize < ifqSize) {
+		std::cerr << "il1 Block size is not at least ifq Size.\n";
+		return 0;
+	}
+	//dl1Blocksize should equal to il1BlockSize
+	if (il1BlockSize != dl1BlockSize) {
+		std::cerr << "il1 Block size is not equal to dl1 Block Size.\n";
+		return 0;
+	}
+	//ul2BlockSize must be at least twice il1BlockSize with a maximum block size of 128B
+	if (ul2BlockSize < (2 * il1BlockSize)) {
+		std::cerr << "ul2 Block size is not at least 2 times of il1 Block Size.\n";
+		return 0;
+	}
+	if (ul2BlockSize > 128) {
+		std::cerr << "ul2 Block size is not less than 128B.\n";
+		return 0;
+	}
+	//ul2 must be at least twice as large as il1+dl1 in order to be inclusive
+	if (ul2Size < 2 * (il1Size + dl1Size)) {
+		std::cerr << "ul2 size is not at least 2 times of (il1 Size+dl1 Size).\n";
+		return 0;
+	}
+	//il1 size and dl1 size requirement
+	if (il1Size < 2 * 1024 || il1Size>64 * 1024) {
+		//std::clog << "il1 size is: " << il1Size<<"\n";
+		std::cerr << "il1 size does not satisfy the size requirement.\n";
+		return 0;
+	}
+	if (dl1Size < 2 * 1024 || dl1Size>64 * 1024) {
+		//std::clog << "dl1 size is: " << dl1Size << "\n";
+		std::cerr << "dl1 size does not satisfy the size requirement.\n";
+		return 0;
+	}
+	//ul2 size requirement
+	if (ul2Size < 32 * 1024 || ul2Size>1024 * 1024) {
+		//std::clog << "ul2 size is: " << ul2Size << "\n";
+		std::cerr << "ul2 size does not satisfy the size requirement.\n";
+		return 0;
+	}
+
+	/* The below is a necessary, but insufficient condition for validating a
+	 configuration.*/
+	//return isNumDimConfiguration(configuration);
+	//std::clog << "The configuration is valid\n";
+	return 1;
 }
 
 /*
