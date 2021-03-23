@@ -124,6 +124,7 @@ int main(int argc, char** argv) {
 		}
 
 		if (proposedGeoEDP < bestEDP) {
+			std:cout << std::endl << "Prop: " << proposedGeoEDP << " Best: " << bestEDP;
 			bestEDPconfig = nextconf;
 			bestEDP = proposedGeoEDP;
 		}
