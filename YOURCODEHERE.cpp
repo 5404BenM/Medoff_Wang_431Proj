@@ -20,7 +20,7 @@ using namespace std;
 /*
  * Enter your PSU IDs here to select the appropriate scanning order.
  */
-#define PSU_ID_SUM (912345679+911111111)
+#define PSU_ID_SUM (911805882+911111111)
 
 /*
  * Some global variables to track heuristic progress.
