@@ -20,6 +20,7 @@ using namespace std;
 /*
  * Enter your PSU IDs here to select the appropriate scanning order.
  */
+//PSU_ID_SUM mod 24=23
 #define PSU_ID_SUM (912717797+911805882)
 
 /*
@@ -28,7 +29,8 @@ using namespace std;
  * Feel free to create more global variables to track progress of your
  * heuristic.
  */
-unsigned int currentlyExploringDim = 0;
+ // Indexes Test order: FPU(11) -> Core(0,1) -> Cache(2~9) -> BP(12~14)
+unsigned int currentlyExploringDim = 11;
 bool currentDimDone = false;
 bool isDSEComplete = false;
 
@@ -64,6 +66,7 @@ int validateConfiguration(std::string configuration) {
 
 	// FIXME - YOUR CODE HERE
 	if (!isNumDimConfiguration(configuration)) {
+		std::clog << "Configuration is :" << configuration<<"\n";
 		std::cerr << "isNumDimConfiguration cannot pass.\n";
 		return 0;
 	}
@@ -74,11 +77,11 @@ int validateConfiguration(std::string configuration) {
 	//The size of unified L2 cache
 	unsigned int ul2Size = getl2size(configuration);
 	//The block size of L1 instruction cache
-	unsigned int il1BlockSize = 8 * (1 << extractConfigPararm(configuration, 2));
+	unsigned int il1BlockSize = extractConfigPararm(configuration, 2);
 	//The block size of L1 data cache
-	unsigned int dl1BlockSize = 8 * (1 << extractConfigPararm(configuration, 2));
+	unsigned int dl1BlockSize = extractConfigPararm(configuration, 2);
 	//The block size of unified L2 cache
-	unsigned int ul2BlockSize = 16 << extractConfigPararm(configuration, 8);
+	unsigned int ul2BlockSize = extractConfigPararm(configuration, 8);
 	//std::clog << "il1 size is: " << il1Size << "\n";
 	//std::clog << "il1 block size is: " << il1BlockSize << "\n";
 	//std::clog << "dl1 size is: " << dl1Size << "\n";
@@ -86,8 +89,7 @@ int validateConfiguration(std::string configuration) {
 	//std::clog << "ul2 size is: " << ul2Size << "\n";
 	//std::clog << "ul2 block size is: " << ul2BlockSize << "\n";
 
-
-	unsigned int ifqSize = 8 * (1 << extractConfigPararm(configuration, 0));
+	unsigned int ifqSize =extractConfigPararm(configuration, 0);
 	//std::clog << "ifq size is: " << ifqSize << "\n";
 
 	//il1BlockSize must be at least the ifqSize
@@ -184,12 +186,14 @@ std::string generateNextConfigurationProposal(std::string currentconfiguration,
 
 		// Fill in the dimensions already-scanned with the already-selected best
 		// value.
+		// Indexes Test order: FPU(11) -> Core(0,1) -> Cache(2~9) -> BP(12~14)
 		for (int dim = 0; dim < currentlyExploringDim; ++dim) {
 			ss << extractConfigPararm(bestConfig, dim) << " ";
 		}
 
 		// Handling for currently exploring dimension. This is a very dumb
 		// implementation.
+	   // Indexes Test order: FPU(11) -> Core(0,1) -> Cache(2~9) -> BP(12~14)
 		int nextValue = extractConfigPararm(nextconfiguration,
 				currentlyExploringDim) + 1;
 
@@ -202,9 +206,11 @@ std::string generateNextConfigurationProposal(std::string currentconfiguration,
 
 		// Fill in remaining independent params with 0.
 		for (int dim = (currentlyExploringDim + 1);
-				dim < (NUM_DIMS - NUM_DIMS_DEPENDENT); ++dim) {
+			dim < (NUM_DIMS - NUM_DIMS_DEPENDENT); ++dim) {
 			ss << "0 ";
 		}
+		// Indexes Test order: FPU(11) -> Core(0,1) -> Cache(2~9) -> BP(12~14)
+
 
 		//
 		// Last NUM_DIMS_DEPENDENT3 configuration parameters are not independent.
@@ -220,13 +226,17 @@ std::string generateNextConfigurationProposal(std::string currentconfiguration,
 		nextconfiguration = ss.str();
 
 		// Make sure we start exploring next dimension in next iteration.
+		// Indexes Test order: FPU(11) -> Core(0,1) -> Cache(2~9) -> BP(12~14)
 		if (currentDimDone) {
 			currentlyExploringDim++;
 			currentDimDone = false;
 		}
 
 		// Signal that DSE is complete after this configuration.
+		// Indexes Test order: FPU(11) -> Core(0,1) -> Cache(2~9) -> BP(12~14)
+		
 		if (currentlyExploringDim == (NUM_DIMS - NUM_DIMS_DEPENDENT))
+			//Do not have to change, since our exploration is done when currentlyExploringDim==15
 			isDSEComplete = true;
 	}
 	return nextconfiguration;
