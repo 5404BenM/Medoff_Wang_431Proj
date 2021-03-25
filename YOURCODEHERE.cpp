@@ -65,8 +65,9 @@ std::string generateCacheLatencyParams(string halfBackedConfig) {
 int validateConfiguration(std::string configuration) {
 
 	// FIXME - YOUR CODE HERE
+//	std::clog << "Current Configuration is :" << configuration << "\n";
 	if (!isNumDimConfiguration(configuration)) {
-		std::clog << "Configuration is :" << configuration<<"\n";
+
 		std::cerr << "isNumDimConfiguration cannot pass.\n";
 		return 0;
 	}
@@ -119,7 +120,7 @@ int validateConfiguration(std::string configuration) {
 	//il1 size and dl1 size requirement
 	if (il1Size < 2 * 1024 || il1Size>64 * 1024) {
 		//std::clog << "il1 size is: " << il1Size<<"\n";
-		std::cerr << "il1 size does not satisfy the size requirement.\n";
+		//std::cerr << "il1 size does not satisfy the size requirement.\n";
 		return 0;
 	}
 	if (dl1Size < 2 * 1024 || dl1Size>64 * 1024) {
@@ -163,7 +164,7 @@ std::string generateNextConfigurationProposal(std::string currentconfiguration,
 	// 3. NUM_DIMS
 	// 4. NUM_DIMS_DEPENDENT
 	// 5. GLOB_seen_configurations
-
+	std::clog << "Current Configuration is :" << currentconfiguration << "\n";
 	std::string nextconfiguration = currentconfiguration;
 	// Continue if proposed configuration is invalid or has been seen/checked before.
 	while (!validateConfiguration(nextconfiguration) ||
@@ -187,8 +188,20 @@ std::string generateNextConfigurationProposal(std::string currentconfiguration,
 		// Fill in the dimensions already-scanned with the already-selected best
 		// value.
 		// Indexes Test order: FPU(11) -> Core(0,1) -> Cache(2~9) -> BP(12~14)
-		for (int dim = 0; dim < currentlyExploringDim; ++dim) {
+		/*for (int dim = 0; dim < currentlyExploringDim; ++dim) {
 			ss << extractConfigPararm(bestConfig, dim) << " ";
+		}*/
+		if (currentlyExploringDim == 11) {
+			for (int dim = 0; dim < 11; ++dim)
+				ss << extractConfigPararm(bestConfig, dim) << " ";
+		}
+		else if (currentlyExploringDim < 11) {
+			for (int dim = 0; dim < currentlyExploringDim; ++dim)
+				ss << extractConfigPararm(bestConfig, dim)<<" ";
+		}
+		else {
+			for (int dim = 0; dim < currentlyExploringDim; ++dim) 
+				ss << extractConfigPararm(bestConfig, dim) << " ";
 		}
 
 		// Handling for currently exploring dimension. This is a very dumb
@@ -197,19 +210,38 @@ std::string generateNextConfigurationProposal(std::string currentconfiguration,
 		int nextValue = extractConfigPararm(nextconfiguration,
 				currentlyExploringDim) + 1;
 
+		//std::clog << "The Next Value is :" << nextValue << "\n";
 		if (nextValue >= GLOB_dimensioncardinality[currentlyExploringDim]) {
 			nextValue = GLOB_dimensioncardinality[currentlyExploringDim] - 1;
 			currentDimDone = true;
 		}
 
 		ss << nextValue << " ";
-
+		if (currentlyExploringDim < 11) {
+			for(int dim=(currentlyExploringDim+1);dim<11;++dim)
+				ss << extractConfigPararm(bestConfig, dim) << " ";
+		}
 		// Fill in remaining independent params with 0.
-		for (int dim = (currentlyExploringDim + 1);
+		/*for (int dim = (currentlyExploringDim + 1);
 			dim < (NUM_DIMS - NUM_DIMS_DEPENDENT); ++dim) {
 			ss << "0 ";
-		}
+		}*/
 		// Indexes Test order: FPU(11) -> Core(0,1) -> Cache(2~9) -> BP(12~14)
+		if (currentlyExploringDim == 11) {
+			for (int dim = 12; dim < (NUM_DIMS - NUM_DIMS_DEPENDENT); ++dim)
+				ss << "0 ";
+		}
+		else if(currentlyExploringDim<11){
+			ss<< extractConfigPararm(bestConfig, 11) << " ";
+			//for (int dim = (currentlyExploringDim + 1); dim < 11; ++dim)
+			//	ss << "0 ";
+			for (int dim = 12; dim < (NUM_DIMS - NUM_DIMS_DEPENDENT); ++dim)
+				ss << "0 ";
+		}
+		else {
+			for (int dim = (currentlyExploringDim + 1); dim < (NUM_DIMS - NUM_DIMS_DEPENDENT); ++dim)
+				ss << "0 ";
+		}
 
 
 		//
@@ -228,7 +260,13 @@ std::string generateNextConfigurationProposal(std::string currentconfiguration,
 		// Make sure we start exploring next dimension in next iteration.
 		// Indexes Test order: FPU(11) -> Core(0,1) -> Cache(2~9) -> BP(12~14)
 		if (currentDimDone) {
-			currentlyExploringDim++;
+			//currentlyExploringDim++;
+			if (currentlyExploringDim == 11)
+				currentlyExploringDim = 0;
+			else if (currentlyExploringDim == 10)
+				currentlyExploringDim = 12;
+			else 
+				currentlyExploringDim++;
 			currentDimDone = false;
 		}
 
