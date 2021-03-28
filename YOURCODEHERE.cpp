@@ -72,11 +72,11 @@ std::string generateCacheLatencyParams(string halfBackedConfig) {
 		il1lat_idx = 4;
 	else if (il1Size == 64 * 1024)
 		il1lat_idx = 5;
-	if (il1Assoc == 2)
+	if (il1Assoc == 1)
 		il1lat_idx += 1;
-	else if (il1Assoc == 4)
+	else if (il1Assoc == 2)
 		il1lat_idx += 2;
-	else if (il1Assoc == 8)
+	else if (il1Assoc == 3)
 		il1lat_idx += 3;
 
 	int dl1lat_idx = 0;
@@ -92,11 +92,11 @@ std::string generateCacheLatencyParams(string halfBackedConfig) {
 		dl1lat_idx = 4;
 	else if (dl1Size == 64 * 1024)
 		dl1lat_idx = 5;
-	if (dl1Assoc == 2)
+	if (dl1Assoc == 1)
 		dl1lat_idx += 1;
-	else if (dl1Assoc == 4)
+	else if (dl1Assoc == 2)
 		dl1lat_idx += 2;
-	else if (dl1Assoc == 8)
+	else if (dl1Assoc == 3)
 		dl1lat_idx += 3;
 
 	int ul2lat_idx = 0;
@@ -112,13 +112,13 @@ std::string generateCacheLatencyParams(string halfBackedConfig) {
 		ul2lat_idx = 4;
 	else if (ul2Size == 1024 * 1024)
 		ul2lat_idx = 5;
-	if (ul2Assoc == 2)
+	if (ul2Assoc == 1)
 		ul2lat_idx += 1;
-	else if (ul2Assoc == 4)
+	else if (ul2Assoc == 2)
 		ul2lat_idx += 2;
-	else if (ul2Assoc == 8)
+	else if (ul2Assoc == 3)
 		ul2lat_idx += 3;
-	else if (ul2Assoc == 16)
+	else if (ul2Assoc == 4)
 		ul2lat_idx += 4;
 	// This is a dumb implementation.
 	
