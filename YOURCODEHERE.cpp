@@ -179,40 +179,40 @@ int validateConfiguration(std::string configuration) {
 
 	//il1BlockSize must be at least the ifqSize
 	if (il1BlockSize < ifqSize) {
-		//std::cerr << "il1 Block size is not at least ifq Size.\n";
+		std::cerr << "il1 Block size is not at least ifq Size.\n";
 		return 0;
 	}
 	//dl1Blocksize should equal to il1BlockSize
 	if (il1BlockSize != dl1BlockSize) {
-		//std::cerr << "il1 Block size is not equal to dl1 Block Size.\n";
+		std::cerr << "il1 Block size is not equal to dl1 Block Size.\n";
 		return 0;
 	}
 	//ul2BlockSize must be at least twice il1BlockSize with a maximum block size of 128B
 	if (ul2BlockSize < (2 * il1BlockSize)) {
-		//std::cerr << "ul2 Block size is not at least 2 times of il1 Block Size.\n";
+		std::cerr << "ul2 Block size is not at least 2 times of il1 Block Size.\n";
 		return 0;
 	}
 	if (ul2BlockSize > 128) {
-		//std::cerr << "ul2 Block size is not less than 128B.\n";
+		std::cerr << "ul2 Block size is not less than 128B.\n";
 		return 0;
 	}
 	//ul2 must be at least twice as large as il1+dl1 in order to be inclusive
 	if (ul2Size < 2 * (il1Size + dl1Size)) {
-		//std::cerr << "ul2 size is not at least 2 times of (il1 Size+dl1 Size).\n";
+		std::cerr << "ul2 size is not at least 2 times of (il1 Size+dl1 Size).\n";
 		return 0;
 	}
 	//il1 size and dl1 size requirement
 	if (il1Size < 2 * 1024 || il1Size>64 * 1024) {
-		//std::cerr << "il1 size does not satisfy the size requirement.\n";
+		std::cerr << "il1 size does not satisfy the size requirement.\n";
 		return 0;
 	}
 	if (dl1Size < 2 * 1024 || dl1Size>64 * 1024) {
-		//std::cerr << "dl1 size does not satisfy the size requirement.\n";
+		std::cerr << "dl1 size does not satisfy the size requirement.\n";
 		return 0;
 	}
 	//ul2 size requirement
 	if (ul2Size < 32 * 1024 || ul2Size>1024 * 1024) {
-		//std::cerr << "ul2 size does not satisfy the size requirement.\n";
+		std::cerr << "ul2 size does not satisfy the size requirement.\n";
 		return 0;
 	}
 
