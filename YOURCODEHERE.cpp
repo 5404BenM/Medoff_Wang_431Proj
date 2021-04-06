@@ -251,13 +251,15 @@ std::string generateNextConfigurationProposal(std::string currentconfiguration,
 		count[i] = 0;
 
 	std::string nextconfiguration = currentconfiguration;
+	int iter = 0;
 	// Continue if proposed configuration is invalid or has been seen/checked before.
 	while (!validateConfiguration(nextconfiguration) ||
 		GLOB_seen_configurations[nextconfiguration]) {
 
+		iter++;
 		// Check if DSE has been completed before and return current
 		// configuration.
-		if(isDSEComplete) {
+		if(iter >= 50) {
 			return currentconfiguration;
 		}
 
@@ -309,7 +311,7 @@ std::string generateNextConfigurationProposal(std::string currentconfiguration,
 
 			ss << nextValue << " ";
 		}
-		
+
 		count[currentlyExploringDim]++;
 
 		if (currentlyExploringDim < 11) {
