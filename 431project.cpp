@@ -92,8 +92,8 @@ int main(int argc, char** argv) {
 				optimizeforEXEC, optimizeforEDP);
 
 		if(currentConfiguration == nextconf) {
-			std::cerr << "returned the same configuration\n"
-					"FINISH\n";
+			std::cerr << "returned the same configuration EDP " << bestEDPconfig << " \nTime " << bestTimeconfig <<
+					"\nFINISH\n";
 			break;
 		}
 
